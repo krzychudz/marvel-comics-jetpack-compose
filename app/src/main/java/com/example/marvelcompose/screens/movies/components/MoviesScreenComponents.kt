@@ -66,12 +66,12 @@ fun CenteredProgressBar() {
 
 @Composable
 fun ComicsElement(comicsModel: ComicsModel) {
-    Card(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), elevation = 2.dp, shape = RoundedCornerShape(8.dp)) {
+    Card(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), elevation = 4.dp, shape = RoundedCornerShape(8.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             NetworkImage(url = "${comicsModel.thumbnail.path}.${comicsModel.thumbnail.extension}".replace("http", "https"), Modifier.fillMaxHeight().width(100.dp).clipToBounds())
-            Column() {
-                Text(text = comicsModel.title ?: "No title found", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(text = comicsModel.description ?: "No description found", maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Column(Modifier.padding(8.dp)) {
+                Text(text = comicsModel.title ?: "No title found", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+                Text(text = comicsModel.description ?: "No description found", overflow = TextOverflow.Ellipsis, maxLines = 2)
             }
         }
     }

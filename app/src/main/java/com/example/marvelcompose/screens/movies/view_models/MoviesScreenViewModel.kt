@@ -13,10 +13,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MoviesScreenViewModel: ViewModel() {
-    val text = "VieModelText"
-
-    private val _comicsData = MutableLiveData<List<ComicsModel>>()
+    private val _comicsData = MutableLiveData<List<ComicsModel>>(listOf())
     val comicsData: LiveData<List<ComicsModel>> = _comicsData
+
+    var currentOffset = 0
+    private var totalDataCount = 0
 
     init {
         fetchMovies()
@@ -24,13 +25,18 @@ class MoviesScreenViewModel: ViewModel() {
 
     fun fetchMovies() {
         val apiInterface = ServiceGenerator.createService(ApiInterface::class.java)
-        val call = apiInterface.getComicsData("0", null)
+        val call = apiInterface.getComicsData((currentOffset + 1).toString(), null)
         call.enqueue(object: Callback<ComicsResponse> {
             override fun onResponse(
                 call: Call<ComicsResponse>,
                 response: Response<ComicsResponse>
             ) {
-                _comicsData.postValue(response.body()?.data?.results)
+                comicsData.value?.let { currentData ->
+                    val newComicsData = currentData + response.body()?.data?.results!!
+                    _comicsData.postValue(newComicsData)
+                    currentOffset += response.body()?.data?.count!!
+                    totalDataCount = response.body()?.data?.total!!
+                }
             }
 
             override fun onFailure(call: Call<ComicsResponse>, t: Throwable) {
@@ -39,4 +45,6 @@ class MoviesScreenViewModel: ViewModel() {
 
         })
     }
+
+    fun isDataToFetch(): Boolean = currentOffset < totalDataCount
 }

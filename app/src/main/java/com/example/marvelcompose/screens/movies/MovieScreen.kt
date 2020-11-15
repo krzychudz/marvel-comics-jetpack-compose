@@ -1,9 +1,14 @@
 package com.example.marvelcompose.screens.movies
 
+import android.util.Log
 import android.view.Gravity
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -41,9 +46,16 @@ fun MovieScreenContent(moviesScreenViewModel: MoviesScreenViewModel) {
     if (comicsData.isEmpty()) {
         CenteredProgressBar()
     } else {
-        ScrollableColumn(contentPadding = PaddingValues(16.dp), modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
-            comicsData.map {
-                ComicsElement(comicsModel = it)
+        Surface(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)) {
+            LazyColumnForIndexed(comicsData) { index, item ->
+                ComicsElement(comicsModel = item)
+                if (index == comicsData.size - 1 && moviesScreenViewModel.isDataToFetch()) {
+                    Log.d("Fetch", "LALAL")
+                    moviesScreenViewModel.fetchMovies()
+                    Box(alignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }
