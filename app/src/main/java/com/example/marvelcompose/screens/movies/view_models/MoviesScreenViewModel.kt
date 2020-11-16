@@ -16,14 +16,24 @@ class MoviesScreenViewModel: ViewModel() {
     private val _comicsData = MutableLiveData<List<ComicsModel>>(listOf())
     val comicsData: LiveData<List<ComicsModel>> = _comicsData
 
+    private val _comicsSearchData = MutableLiveData("")
+    val comicsSearchData: LiveData<String> = _comicsSearchData
+
     var currentOffset = 0
     private var totalDataCount = 0
+    private var isFetching = false
 
     init {
         fetchMovies()
     }
 
+    fun updateComicsSearchData(newState: String) {
+        _comicsSearchData.value = newState
+    }
+
+
     fun fetchMovies() {
+        isFetching = true
         val apiInterface = ServiceGenerator.createService(ApiInterface::class.java)
         val call = apiInterface.getComicsData((currentOffset + 1).toString(), null)
         call.enqueue(object: Callback<ComicsResponse> {
@@ -37,14 +47,15 @@ class MoviesScreenViewModel: ViewModel() {
                     currentOffset += response.body()?.data?.count!!
                     totalDataCount = response.body()?.data?.total!!
                 }
+                isFetching = false
             }
 
             override fun onFailure(call: Call<ComicsResponse>, t: Throwable) {
-                Log.d("Fetched", t.message.toString())
+                isFetching = false
             }
 
         })
     }
 
-    fun isDataToFetch(): Boolean = currentOffset < totalDataCount
+    fun canFetchData(): Boolean = currentOffset < totalDataCount && !isFetching
 }
