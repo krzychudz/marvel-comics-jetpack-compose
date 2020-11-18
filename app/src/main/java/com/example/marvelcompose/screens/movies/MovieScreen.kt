@@ -32,10 +32,10 @@ fun MoviesScreen() {
 
 @Composable
 fun MovieScreenContent(moviesScreenViewModel: MoviesScreenViewModel = viewModel()) {
-    val comicsSearchData: String by moviesScreenViewModel.comicsSearchData.observeAsState("")
+    val comicsSearchData: String? by moviesScreenViewModel.comicsSearchData.observeAsState(null)
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TextField(value = comicsSearchData,
+        TextField(value = comicsSearchData ?: "",
             onValueChange = { newText -> moviesScreenViewModel.updateComicsSearchData(newText) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Search for comics") })

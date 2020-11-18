@@ -16,8 +16,8 @@ class MoviesScreenViewModel: ViewModel() {
     private val _comicsData = MutableLiveData<List<ComicsModel>>(listOf())
     val comicsData: LiveData<List<ComicsModel>> = _comicsData
 
-    private val _comicsSearchData = MutableLiveData("")
-    val comicsSearchData: LiveData<String> = _comicsSearchData
+    private val _comicsSearchData = MutableLiveData<String?>(null)
+    val comicsSearchData: LiveData<String?> = _comicsSearchData
 
     var currentOffset = 0
     private var totalDataCount = 0
@@ -29,13 +29,26 @@ class MoviesScreenViewModel: ViewModel() {
 
     fun updateComicsSearchData(newState: String) {
         _comicsSearchData.value = newState
+        resetData()
+        fetchMovies()
     }
 
+    private fun resetData() {
+        currentOffset = 0
+        totalDataCount = 0
+        _comicsData.postValue(listOf())
+    }
 
     fun fetchMovies() {
         isFetching = true
+
+        var searchQuery = _comicsSearchData.value
+        searchQuery?.let {
+            if (it.isEmpty()) searchQuery = null
+        }
+
         val apiInterface = ServiceGenerator.createService(ApiInterface::class.java)
-        val call = apiInterface.getComicsData((currentOffset + 1).toString(), null)
+        val call = apiInterface.getComicsData((currentOffset + 1).toString(), searchQuery)
         call.enqueue(object: Callback<ComicsResponse> {
             override fun onResponse(
                 call: Call<ComicsResponse>,
@@ -57,5 +70,5 @@ class MoviesScreenViewModel: ViewModel() {
         })
     }
 
-    fun canFetchData(): Boolean = currentOffset < totalDataCount && !isFetching
+    fun canFetchData(): Boolean = currentOffset + 1 < totalDataCount && !isFetching
 }
