@@ -7,12 +7,10 @@ import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +32,7 @@ import coil.request.ImageRequest
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.marvelcompose.screens.movies.view_models.MoviesScreenViewModel
 
 @Composable
 fun TopBar(title: String) {
@@ -60,6 +59,31 @@ fun CenteredProgressBar() {
         alignment = Alignment.Center
     ) {
         CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun ComicsResultSection(data: List<ComicsModel>, moviesScreenViewModel: MoviesScreenViewModel) {
+    Surface(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)) {
+            LazyColumnForIndexed(data) { index, item ->
+                ComicsElement(comicsModel = item)
+                if (index == data.size - 1 && moviesScreenViewModel.canFetchData()) {
+                    moviesScreenViewModel.fetchMovies()
+                    Box(alignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+    }
+}
+
+@Composable
+fun NoResultInfo() {
+    Box(
+        Modifier.fillMaxSize(),
+        alignment = Alignment.Center
+    ) {
+        Text("No comics found")
     }
 }
 
