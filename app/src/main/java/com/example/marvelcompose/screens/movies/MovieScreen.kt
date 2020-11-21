@@ -10,6 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
 import androidx.ui.tooling.preview.Preview
 import com.example.marvelcompose.models.ComicsModel
 import com.example.marvelcompose.screens.movies.components.*
@@ -18,18 +20,19 @@ import com.example.marvelcompose.screens.movies.view_models.MoviesScreenViewMode
 const val movieScreenRouteName = "movieScreen"
 
 @Composable
-@Preview
-fun MoviesScreen() {
+fun MoviesScreen(navController: NavController) {
     Scaffold(
         topBar = { TopBar("Movies List") },
         bodyContent = {
-            MovieScreenContent()
+            MovieScreenContent(navCallback = {
+                navController.navigate("detailsScreen")
+            })
         }
     )
 }
 
 @Composable
-fun MovieScreenContent(moviesScreenViewModel: MoviesScreenViewModel = viewModel()) {
+fun MovieScreenContent(navCallback: () -> Unit, moviesScreenViewModel: MoviesScreenViewModel = viewModel()) {
     val comicsSearchData: String? by moviesScreenViewModel.comicsSearchData.observeAsState(null)
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -37,12 +40,12 @@ fun MovieScreenContent(moviesScreenViewModel: MoviesScreenViewModel = viewModel(
             onValueChange = { newText -> moviesScreenViewModel.updateComicsSearchData(newText) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Search for comics") })
-        ComicsContainer(moviesScreenViewModel)
+        ComicsContainer(moviesScreenViewModel, navCallback)
     }
 }
 
 @Composable
-fun ComicsContainer(moviesScreenViewModel: MoviesScreenViewModel) {
+fun ComicsContainer(moviesScreenViewModel: MoviesScreenViewModel, navCallback: () -> Unit) {
     val comicsData: List<ComicsModel>? by moviesScreenViewModel.comicsData.observeAsState(null)
 
     when {
@@ -50,7 +53,7 @@ fun ComicsContainer(moviesScreenViewModel: MoviesScreenViewModel) {
         comicsData == null -> CenteredProgressBar()
         else -> {
            comicsData?.let { data ->
-               ComicsResultSection(data, moviesScreenViewModel)
+               ComicsResultSection(data, moviesScreenViewModel, navCallback)
            }
         }
     }
