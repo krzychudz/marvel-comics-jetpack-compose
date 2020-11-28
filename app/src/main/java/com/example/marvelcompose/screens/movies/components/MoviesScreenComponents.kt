@@ -3,6 +3,7 @@ package com.example.marvelcompose.screens.movies.components
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageAsset
 import androidx.compose.ui.graphics.asImageAsset
 import androidx.compose.ui.platform.ContextAmbient
@@ -138,7 +140,9 @@ fun NetworkImage(url: String, modifier: Modifier) {
     ContextAmbient.current.imageLoader.enqueue(request)
 
     if (drawable == null) {
-        Text("Waiting")
+        Box(alignment = Alignment.Center, modifier = modifier) {
+            CircularProgressIndicator()
+        }
     } else {
         val bitmapDrawable = drawable as BitmapDrawable
         Image(bitmapDrawable.bitmap.asImageAsset(), modifier = modifier)
