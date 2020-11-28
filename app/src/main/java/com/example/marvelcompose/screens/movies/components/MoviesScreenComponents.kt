@@ -66,7 +66,7 @@ fun CenteredProgressBar() {
 fun ComicsResultSection(
     data: List<ComicsModel>,
     moviesScreenViewModel: MoviesScreenViewModel,
-    navCallback: () -> Unit
+    navCallback: (movieId: String?) -> Unit
 ) {
     Surface(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)) {
         LazyColumnForIndexed(data) { index, item ->
@@ -94,10 +94,11 @@ fun NoResultInfo() {
 
 
 @Composable
-fun ComicsElement(comicsModel: ComicsModel, navCallback: () -> Unit) {
+fun ComicsElement(comicsModel: ComicsModel, navCallback: (movieId: String?) -> Unit) {
 
     Card(
-        modifier = Modifier.clickable(onClick = navCallback).fillMaxWidth().padding(bottom = 8.dp),
+        modifier = Modifier.clickable(onClick = { navCallback.invoke(comicsModel.id.toString()) })
+            .fillMaxWidth().padding(bottom = 8.dp),
         elevation = 4.dp,
         shape = RoundedCornerShape(8.dp)
     ) {

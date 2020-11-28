@@ -1,5 +1,6 @@
 package com.example.marvelcompose.screens.movies
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.*
@@ -24,15 +25,15 @@ fun MoviesScreen(navController: NavController) {
     Scaffold(
         topBar = { TopBar("Movies List") },
         bodyContent = {
-            MovieScreenContent(navCallback = {
-                navController.navigate("detailsScreen")
+            MovieScreenContent(navCallback = { movieId ->
+                navController.navigate("detailsScreen/$movieId")
             })
         }
     )
 }
 
 @Composable
-fun MovieScreenContent(navCallback: () -> Unit, moviesScreenViewModel: MoviesScreenViewModel = viewModel()) {
+fun MovieScreenContent(navCallback: (movieId: String?) -> Unit, moviesScreenViewModel: MoviesScreenViewModel = viewModel()) {
     val comicsSearchData: String? by moviesScreenViewModel.comicsSearchData.observeAsState(null)
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -45,7 +46,7 @@ fun MovieScreenContent(navCallback: () -> Unit, moviesScreenViewModel: MoviesScr
 }
 
 @Composable
-fun ComicsContainer(moviesScreenViewModel: MoviesScreenViewModel, navCallback: () -> Unit) {
+fun ComicsContainer(moviesScreenViewModel: MoviesScreenViewModel, navCallback: (movieId: String?) -> Unit) {
     val comicsData: List<ComicsModel>? by moviesScreenViewModel.comicsData.observeAsState(null)
 
     when {

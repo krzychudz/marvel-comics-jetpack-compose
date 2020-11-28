@@ -19,8 +19,8 @@ fun MarvelApp() {
             composable(movieScreenRouteName) {
                 MoviesScreen(navController)
             }
-            composable("detailsScreen") {
-                DetailsScreen(navController)
+            composable("detailsScreen/{comicsId}") { backStackEntry ->
+                DetailsScreen(navController, backStackEntry.arguments?.getString("comicsId"))
             }
         }
     }

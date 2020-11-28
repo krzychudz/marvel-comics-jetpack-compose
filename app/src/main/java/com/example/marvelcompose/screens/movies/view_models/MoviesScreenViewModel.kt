@@ -73,4 +73,9 @@ class MoviesScreenViewModel : ViewModel() {
     }
 
     fun canFetchData(): Boolean = currentOffset + 1 < totalDataCount && !isFetching
+
+    fun getComicsById(comicsId: String?): ComicsModel? {
+        Log.d("heree", "heree")
+        return comicsData.value?.firstOrNull { comics -> comics.id.toString() == comicsId }
+    }
 }
