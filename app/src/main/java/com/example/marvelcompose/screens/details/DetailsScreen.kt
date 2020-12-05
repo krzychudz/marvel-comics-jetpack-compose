@@ -12,16 +12,15 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.navigation.NavController
 import com.example.marvelcompose.R
-import com.example.marvelcompose.screens.movies.MovieScreenContent
 import com.example.marvelcompose.screens.movies.components.TopBar
 import com.example.marvelcompose.screens.movies.view_models.MoviesScreenViewModel
 
 @Composable
-fun DetailsScreen(navController: NavController, comicsId: String?) {
+fun DetailsScreen(navController: NavController, comicsId: String?, viewModel: MoviesScreenViewModel) {
     Scaffold(
         topBar = {
             TopBar(
-                title = "Movies List",
+                title = viewModel.getComicsById(comicsId)?.title ?: "Comics Detail",
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(asset = imageResource(id = R.drawable.arrow_back))
@@ -29,13 +28,13 @@ fun DetailsScreen(navController: NavController, comicsId: String?) {
                 })
         },
         bodyContent = {
-            DetailsScreenContent(comicsId)
+            DetailsScreenContent(comicsId, viewModel)
         }
     )
 }
 
 @Composable
-fun DetailsScreenContent(comicsId: String?, viewModel: MoviesScreenViewModel = viewModel()) {
+fun DetailsScreenContent(comicsId: String?, viewModel: MoviesScreenViewModel) {
     val comicsData = viewModel.getComicsById(comicsId)
 
     Column(modifier = Modifier.fillMaxSize()) {

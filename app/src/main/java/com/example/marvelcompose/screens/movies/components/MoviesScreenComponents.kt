@@ -45,12 +45,13 @@ fun TopBar(title: String, navigationIcon: @Composable (() -> Unit)? = null) {
                     fontStyle = FontStyle.Normal,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
-                )
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         backgroundColor = colors.primary,
         navigationIcon = navigationIcon
-
     )
 }
 
